@@ -80,7 +80,7 @@ export default function Settings() {
                   <div className="relative group z-10">
                     <div className="w-24 h-24 sm:w-32 sm:h-32 rounded-full bg-[#1C1D22] p-1.5 shadow-xl">
                       <div className="w-full h-full rounded-full bg-gradient-to-tr from-[#14F195] to-[#12D886] flex items-center justify-center overflow-hidden relative">
-                        <span className="text-3xl sm:text-5xl font-bold text-[#0A0B10]">JD</span>
+                        <span className="text-3xl sm:text-5xl font-bold text-[#0A0B10]">{initials}</span>
 
                         {/* Hover Overlay */}
                         <div className="absolute inset-0 bg-black/60 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity cursor-pointer">
@@ -141,7 +141,7 @@ export default function Settings() {
                         <div className="relative">
                           <input
                             className="w-full px-4 py-3.5 rounded-xl border border-[#2A2B32] bg-transparent text-white text-sm outline-none focus:border-[#14F195] transition-colors pr-24"
-                            defaultValue="hello@ledgerflow.app"
+                            defaultValue={email}
                             type="email"
                           />
                           <div className="absolute right-3 top-1/2 -translate-y-1/2 flex items-center gap-1.5 bg-[#14F195]/10 px-2 py-1 rounded text-xs font-semibold text-[#14F195]">
@@ -156,7 +156,7 @@ export default function Settings() {
                         </label>
                         <input
                           className="w-full px-4 py-3.5 rounded-xl border border-[#2A2B32] bg-transparent text-white text-sm outline-none focus:border-[#14F195] transition-colors"
-                          defaultValue="+1 (212) 555-1234"
+                          defaultValue={phone}
                           type="tel"
                         />
                       </div>
