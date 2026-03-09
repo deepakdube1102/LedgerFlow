@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
 import {
   LayoutDashboard,
   TrendingUp,
@@ -14,16 +15,18 @@ import {
 import { motion } from "framer-motion";
 
 const navItems = [
-  { icon: LayoutDashboard, label: "Dashboard", active: true },
-  { icon: TrendingUp, label: "Analytics" },
-  { icon: Users, label: "Customers" },
-  { icon: CreditCard, label: "Billing" },
-  { icon: BarChart3, label: "Reports" },
-  { icon: Settings, label: "Settings" },
+  { icon: LayoutDashboard, label: "Dashboard", path: "/" },
+  { icon: TrendingUp, label: "Analytics", path: "/analytics" },
+  { icon: Users, label: "Customers", path: "/customers" },
+  { icon: CreditCard, label: "Billing", path: "/billing" },
+  { icon: BarChart3, label: "Reports", path: "/reports" },
+  { icon: Settings, label: "Settings", path: "/settings" },
 ];
 
 export function DashboardSidebar() {
   const [collapsed, setCollapsed] = useState(false);
+  const location = useLocation();
+  const navigate = useNavigate();
 
   return (
     <motion.aside
@@ -51,23 +54,26 @@ export function DashboardSidebar() {
       {/* Nav */}
       <nav className="flex-1 px-3 space-y-1">
         {navItems.map((item) => (
-          <a
+          <button
             key={item.label}
-            href="#"
-            className={`sidebar-link ${item.active ? "active" : ""}`}
+            onClick={() => navigate(item.path)}
+            className={`sidebar-link w-full ${location.pathname === item.path ? "active" : ""}`}
           >
             <item.icon className="w-5 h-5 flex-shrink-0" />
             {!collapsed && <span>{item.label}</span>}
-          </a>
+          </button>
         ))}
       </nav>
 
       {/* Help */}
       <div className="px-3 mt-auto">
-        <a href="#" className="sidebar-link">
+        <button
+          onClick={() => navigate("/help")}
+          className={`sidebar-link w-full ${location.pathname === "/help" ? "active" : ""}`}
+        >
           <HelpCircle className="w-5 h-5 flex-shrink-0" />
           {!collapsed && <span>Help & Support</span>}
-        </a>
+        </button>
       </div>
 
       {/* Collapse toggle */}
