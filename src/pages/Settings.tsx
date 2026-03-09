@@ -41,9 +41,8 @@ export default function Settings() {
               <button
                 key={t.label}
                 onClick={() => setActiveTab(t.label)}
-                className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm transition-colors ${
-                  activeTab === t.label ? "bg-primary text-primary-foreground font-medium" : "text-muted-foreground hover:text-foreground hover:bg-secondary"
-                }`}
+                className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm transition-colors ${activeTab === t.label ? "bg-primary text-primary-foreground font-medium" : "text-muted-foreground hover:text-foreground hover:bg-secondary"
+                  }`}
               >
                 <t.icon className="w-4 h-4" /> {t.label}
               </button>
@@ -70,7 +69,7 @@ export default function Settings() {
                   { label: "First Name", value: "John" },
                   { label: "Last Name", value: "Doe" },
                   { label: "Email", value: "john@example.com" },
-                  { label: "Company", value: "FinTrack Inc." },
+                  { label: "Company", value: "LedgerFlow Inc." },
                 ].map((f) => (
                   <div key={f.label}>
                     <label className="text-sm font-medium text-muted-foreground mb-1.5 block">{f.label}</label>

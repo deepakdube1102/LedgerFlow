@@ -11,14 +11,18 @@ import {
   ChevronLeft,
   ChevronRight,
   Zap,
+  ArrowDownCircle,
+  ArrowUpCircle,
 } from "lucide-react";
 import { motion } from "framer-motion";
 
-const navItems = [
+export const navItems = [
   { icon: LayoutDashboard, label: "Dashboard", path: "/" },
   { icon: TrendingUp, label: "Analytics", path: "/analytics" },
   { icon: Users, label: "Customers", path: "/customers" },
   { icon: CreditCard, label: "Billing", path: "/billing" },
+  { icon: ArrowDownCircle, label: "Income", path: "/income" },
+  { icon: ArrowUpCircle, label: "Expenses", path: "/expenses" },
   { icon: BarChart3, label: "Reports", path: "/reports" },
   { icon: Settings, label: "Settings", path: "/settings" },
 ];
@@ -46,7 +50,7 @@ export function DashboardSidebar() {
             className="font-heading text-lg font-bold"
             style={{ color: "white" }}
           >
-            FinTrack
+            LedgerFlow
           </motion.span>
         )}
       </div>

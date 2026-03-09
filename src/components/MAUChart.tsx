@@ -1,22 +1,31 @@
 import { motion } from "framer-motion";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from "recharts";
+import { useQuery } from "@tanstack/react-query";
+import { useAuth } from "../context/AuthContext";
 
-const data = [
-  { month: "Jan", users: 1200 },
-  { month: "Feb", users: 1400 },
-  { month: "Mar", users: 1350 },
-  { month: "Apr", users: 1800 },
-  { month: "May", users: 2100 },
-  { month: "Jun", users: 1950 },
-  { month: "Jul", users: 2300 },
-  { month: "Aug", users: 2500 },
-  { month: "Sep", users: 2400 },
-  { month: "Oct", users: 2700 },
-  { month: "Nov", users: 2650 },
-  { month: "Dec", users: 2847 },
-];
+interface MAUData {
+  month: string;
+  users: number;
+}
 
 export function MAUChart() {
+  const { user } = useAuth();
+
+  const { data: mauData, isLoading, error } = useQuery<MAUData[]>({
+    queryKey: ['mau'],
+    queryFn: async () => {
+      const res = await fetch('/api/dashboard/mau', {
+        headers: { Authorization: `Bearer ${user?.token}` }
+      });
+      if (!res.ok) throw new Error('Failed to fetch MAU data');
+      return res.json();
+    }
+  });
+
+  if (isLoading || !mauData) {
+    return <div className="dashboard-card h-96 animate-pulse bg-muted/50" />;
+  }
+
   return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}
@@ -33,7 +42,7 @@ export function MAUChart() {
       </div>
       <div className="h-72">
         <ResponsiveContainer width="100%" height="100%">
-          <BarChart data={data} barSize={24}>
+          <BarChart data={mauData} barSize={24}>
             <CartesianGrid strokeDasharray="3 3" stroke="hsl(220, 13%, 91%)" vertical={false} />
             <XAxis dataKey="month" axisLine={false} tickLine={false} tick={{ fontSize: 12, fill: "hsl(220, 9%, 46%)" }} />
             <YAxis axisLine={false} tickLine={false} tick={{ fontSize: 12, fill: "hsl(220, 9%, 46%)" }} />

@@ -11,7 +11,7 @@ const faqs = [
 
 const resources = [
   { title: "Documentation", desc: "Comprehensive guides and API reference", icon: Book, link: "#" },
-  { title: "Community Forum", desc: "Connect with other FinTrack users", icon: MessageCircle, link: "#" },
+  { title: "Community Forum", desc: "Connect with other LedgerFlow users", icon: MessageCircle, link: "#" },
   { title: "Contact Support", desc: "Get help from our support team", icon: Mail, link: "#" },
 ];
 
