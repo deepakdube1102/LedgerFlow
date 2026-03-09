@@ -1,6 +1,7 @@
 import { motion } from "framer-motion";
 import { User, Bell, Shield, Palette, Upload, Check } from "lucide-react";
 import { useState } from "react";
+import { useAuth } from "../context/AuthContext";
 
 const tabs = [
   { label: "Profile", icon: User },
@@ -23,6 +24,17 @@ function Toggle({ defaultOn = false }: { defaultOn?: boolean }) {
 
 export default function Settings() {
   const [activeTab, setActiveTab] = useState("Profile");
+  const { user } = useAuth();
+
+  const fullName = user?.name || "John Doe";
+  const nameParts = fullName.split(" ");
+  const firstName = nameParts[0] || "";
+  const lastName = nameParts.length > 1 ? nameParts.slice(1).join(" ") : "";
+  const email = user?.email || "hello@ledgerflow.app";
+  const initials = ((firstName[0] || "") + (lastName[0] || "")).toUpperCase() || "JD";
+
+  // Safely cast user to any to optionally pull phone if it gets added to the session
+  const phone = (user as any)?.phone || "+1 (212) 555-1234";
 
   return (
     <motion.div variants={container} initial="hidden" animate="show" className="max-w-7xl mx-auto space-y-6">
@@ -78,7 +90,7 @@ export default function Settings() {
                     </div>
                   </div>
                   <div className="flex-1 text-center sm:text-left">
-                    <h3 className="font-heading text-2xl font-bold text-white">John Doe</h3>
+                    <h3 className="font-heading text-2xl font-bold text-white">{fullName}</h3>
                     <p className="text-[#14F195] font-medium text-sm mb-4">Senior Financial Analyst</p>
                     <div className="flex flex-wrap justify-center sm:justify-start gap-3">
                       <button className="px-4 py-2 rounded-xl bg-[#2A2B32] text-sm font-medium text-white hover:bg-[#34353E] transition-colors border border-white/5">
@@ -99,8 +111,8 @@ export default function Settings() {
                     </h4>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                       {[
-                        { label: "First Name", value: "John", placeholder: "e.g. Jonas" },
-                        { label: "Last Name", value: "Doe", placeholder: "e.g. Davies" },
+                        { label: "First Name", value: firstName, placeholder: "e.g. Jonas" },
+                        { label: "Last Name", value: lastName, placeholder: "e.g. Davies" },
                         { label: "Job Title", value: "Senior Financial Analyst", placeholder: "e.g. CEO" },
                         { label: "Company / Organization", value: "LedgerFlow Inc.", placeholder: "Where do you work?" },
                       ].map((f) => (
