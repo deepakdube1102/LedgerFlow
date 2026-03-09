@@ -29,7 +29,7 @@ export function DashboardSidebar() {
     <motion.aside
       animate={{ width: collapsed ? 72 : 240 }}
       transition={{ duration: 0.2, ease: "easeInOut" }}
-      className="sidebar-nav h-screen flex flex-col py-6 relative flex-shrink-0"
+      className="sidebar-nav h-screen hidden md:flex flex-col py-6 relative flex-shrink-0 sticky top-0"
     >
       {/* Logo */}
       <div className="px-5 mb-8 flex items-center gap-3">
