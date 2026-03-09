@@ -1,5 +1,5 @@
 import { motion } from "framer-motion";
-import { User, Bell, Shield, Palette, Globe, Key } from "lucide-react";
+import { User, Bell, Shield, Palette, Upload, Check } from "lucide-react";
 import { useState } from "react";
 
 const tabs = [
@@ -7,8 +7,6 @@ const tabs = [
   { label: "Notifications", icon: Bell },
   { label: "Security", icon: Shield },
   { label: "Appearance", icon: Palette },
-  { label: "API Keys", icon: Key },
-  { label: "Integrations", icon: Globe },
 ];
 
 const container = { hidden: {}, show: { transition: { staggerChildren: 0.06 } } };
@@ -53,31 +51,70 @@ export default function Settings() {
         {/* Content */}
         <motion.div variants={item} className="lg:col-span-3 space-y-6">
           {activeTab === "Profile" && (
-            <div className="dashboard-card space-y-6">
-              <h3 className="font-heading text-lg font-semibold text-foreground">Profile Information</h3>
-              <div className="flex items-center gap-4">
-                <div className="w-16 h-16 rounded-full kpi-gradient-primary flex items-center justify-center">
-                  <span className="text-xl font-bold text-primary-foreground">JD</span>
+            <div className="bg-[#1C1D22] border border-[#2A2B32] rounded-2xl p-6 sm:p-8 space-y-8 shadow-xl">
+              <div>
+                <h3 className="font-heading text-2xl font-bold text-white mb-1">Profile Information</h3>
+                <p className="text-zinc-500 text-sm">Update your personal details and public profile here.</p>
+              </div>
+
+              {/* Avatar Section */}
+              <div className="flex flex-col sm:flex-row items-start sm:items-center gap-6 pb-6 border-b border-[#2A2B32]">
+                <div className="relative group">
+                  <div className="w-24 h-24 rounded-full bg-gradient-to-tr from-[#14F195] to-[#12D886] flex items-center justify-center p-1 shadow-[0_0_20px_rgba(20,241,149,0.2)]">
+                    <div className="w-full h-full rounded-full bg-[#0A0B10] flex items-center justify-center overflow-hidden relative">
+                      <span className="text-3xl font-bold text-white">JD</span>
+
+                      {/* Hover Overlay */}
+                      <div className="absolute inset-0 bg-black/60 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity cursor-pointer">
+                        <Upload className="w-6 h-6 text-white" />
+                      </div>
+                    </div>
+                  </div>
                 </div>
                 <div>
-                  <p className="font-medium text-foreground">John Doe</p>
-                  <p className="text-sm text-muted-foreground">john@example.com</p>
+                  <div className="flex gap-3 mb-2">
+                    <button className="px-4 py-2 rounded-xl bg-[#2A2B32] text-sm font-medium text-white hover:bg-[#34353E] transition-colors border border-white/5">
+                      Change Avatar
+                    </button>
+                    <button className="px-4 py-2 rounded-xl bg-transparent text-sm font-medium text-zinc-400 hover:text-white transition-colors">
+                      Remove
+                    </button>
+                  </div>
+                  <p className="text-xs text-zinc-500">JPG, GIF or PNG. Max size of 800K</p>
                 </div>
               </div>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+
+              {/* Form Section */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 {[
-                  { label: "First Name", value: "John" },
-                  { label: "Last Name", value: "Doe" },
-                  { label: "Email", value: "john@example.com" },
-                  { label: "Company", value: "LedgerFlow Inc." },
+                  { label: "First Name", value: "John", placeholder: "e.g. Jonas" },
+                  { label: "Last Name", value: "Doe", placeholder: "e.g. Davies" },
+                  { label: "Email Address", value: "hello@ledgerflow.app", placeholder: "you@example.com", isVerified: true },
+                  { label: "Company / Organization", value: "LedgerFlow Inc.", placeholder: "Where do you work?" },
                 ].map((f) => (
-                  <div key={f.label}>
-                    <label className="text-sm font-medium text-muted-foreground mb-1.5 block">{f.label}</label>
-                    <input className="w-full px-3 py-2 rounded-lg border border-border bg-secondary text-sm text-foreground outline-none focus:ring-2 focus:ring-ring" defaultValue={f.value} />
+                  <div key={f.label} className="relative">
+                    <label className="text-xs font-medium text-zinc-400 mb-2 block uppercase tracking-wider">{f.label}</label>
+                    <div className="relative">
+                      <input
+                        className="w-full px-4 py-3.5 rounded-xl border border-[#2A2B32] bg-[#0A0B10] text-white text-sm outline-none focus:border-[#14F195] transition-colors"
+                        defaultValue={f.value}
+                        placeholder={f.placeholder}
+                      />
+                      {f.isVerified && (
+                        <div className="absolute right-4 top-1/2 -translate-y-1/2 flex items-center gap-1.5 bg-[#14F195]/10 px-2 py-1 rounded text-xs font-semibold text-[#14F195]">
+                          <Check className="w-3 h-3" /> Verified
+                        </div>
+                      )}
+                    </div>
                   </div>
                 ))}
               </div>
-              <button className="px-4 py-2 rounded-lg bg-primary text-primary-foreground text-sm font-medium hover:opacity-90 transition-opacity">Save Changes</button>
+
+              <div className="pt-4 flex justify-end">
+                <button className="px-6 py-3 rounded-xl bg-[#14F195] text-[#0A0B10] font-bold text-sm hover:bg-[#12D886] hover:scale-[1.02] active:scale-95 transition-all shadow-[0_0_15px_rgba(20,241,149,0.3)]">
+                  Save Changes
+                </button>
+              </div>
             </div>
           )}
 
@@ -149,49 +186,6 @@ export default function Settings() {
             </div>
           )}
 
-          {activeTab === "API Keys" && (
-            <div className="dashboard-card space-y-5">
-              <h3 className="font-heading text-lg font-semibold text-foreground">API Keys</h3>
-              <p className="text-sm text-muted-foreground">Manage your API keys for programmatic access.</p>
-              <div className="space-y-3">
-                {[
-                  { name: "Production Key", key: "sk_live_••••••••4f2a", created: "Jan 10, 2025" },
-                  { name: "Development Key", key: "sk_test_••••••••8b1c", created: "Feb 5, 2025" },
-                ].map((k) => (
-                  <div key={k.name} className="flex items-center justify-between p-3 rounded-lg bg-secondary">
-                    <div>
-                      <p className="text-sm font-medium text-foreground">{k.name}</p>
-                      <p className="text-xs text-muted-foreground font-mono">{k.key} · Created {k.created}</p>
-                    </div>
-                    <button className="px-3 py-1.5 rounded-lg text-xs font-medium text-destructive hover:bg-destructive/10 transition-colors">Revoke</button>
-                  </div>
-                ))}
-              </div>
-              <button className="px-4 py-2 rounded-lg bg-primary text-primary-foreground text-sm font-medium hover:opacity-90 transition-opacity">Generate New Key</button>
-            </div>
-          )}
-
-          {activeTab === "Integrations" && (
-            <div className="dashboard-card space-y-5">
-              <h3 className="font-heading text-lg font-semibold text-foreground">Integrations</h3>
-              {[
-                { name: "Slack", desc: "Send alerts to your Slack channels", connected: true },
-                { name: "Stripe", desc: "Sync payment and subscription data", connected: true },
-                { name: "HubSpot", desc: "Sync customer data to your CRM", connected: false },
-                { name: "Zapier", desc: "Automate workflows with 5,000+ apps", connected: false },
-              ].map((int) => (
-                <div key={int.name} className="flex items-center justify-between py-3 border-b border-border last:border-0">
-                  <div>
-                    <p className="text-sm font-medium text-foreground">{int.name}</p>
-                    <p className="text-xs text-muted-foreground">{int.desc}</p>
-                  </div>
-                  <button className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-colors ${int.connected ? "bg-primary/10 text-primary" : "bg-secondary text-muted-foreground hover:text-foreground"}`}>
-                    {int.connected ? "Connected" : "Connect"}
-                  </button>
-                </div>
-              ))}
-            </div>
-          )}
         </motion.div>
       </div>
     </motion.div>

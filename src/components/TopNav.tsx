@@ -48,13 +48,6 @@ export function TopNav() {
     }
   };
 
-  const handleSearchClick = () => {
-    toast("Search opened", { description: "Search functionality will be implemented soon." });
-  };
-
-  const handleNotificationClick = () => {
-    toast("Notifications", { description: "You have 3 unread notifications." });
-  };
 
   return (
     <header className="h-16 border-b border-border bg-card flex items-center justify-between px-4 sm:px-6 flex-shrink-0">
@@ -134,13 +127,6 @@ export function TopNav() {
           ) : (
             <Moon className="w-4 h-4 text-muted-foreground hover:text-foreground" />
           )}
-        </button>
-        <button onClick={handleSearchClick} className="p-2 rounded-lg hover:bg-secondary transition-colors">
-          <Search className="w-4 h-4 text-muted-foreground" />
-        </button>
-        <button onClick={handleNotificationClick} className="p-2 rounded-lg hover:bg-secondary transition-colors relative">
-          <Bell className="w-4 h-4 text-muted-foreground" />
-          <span className="absolute top-1.5 right-1.5 w-2 h-2 rounded-full bg-destructive" />
         </button>
 
         <DropdownMenu>
