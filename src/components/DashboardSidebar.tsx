@@ -40,8 +40,8 @@ export function DashboardSidebar() {
     >
       {/* Logo */}
       <div className="px-5 mb-8 flex items-center gap-3">
-        <div className="w-8 h-8 rounded-lg kpi-gradient-primary flex items-center justify-center flex-shrink-0">
-          <Zap className="w-4 h-4" color="white" />
+        <div className="w-8 h-8 flex items-center justify-center flex-shrink-0">
+          <img src="/ledgerflow.png" alt="LedgerFlow Logo" className="w-full h-full object-contain" />
         </div>
         {!collapsed && (
           <motion.span
