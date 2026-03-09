@@ -6,6 +6,13 @@ interface User {
     name: string;
     email: string;
     token: string;
+    jobTitle?: string;
+    company?: string;
+    phone?: string;
+    location?: string;
+    bio?: string;
+    avatarUrl?: string;
+    coverUrl?: string;
 }
 
 interface AuthContextType {

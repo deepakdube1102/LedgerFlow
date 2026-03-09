@@ -1,7 +1,8 @@
 import { motion } from "framer-motion";
 import { User, Bell, Shield, Palette, Upload, Check } from "lucide-react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useAuth } from "../context/AuthContext";
+import { toast } from "sonner";
 
 const tabs = [
   { label: "Profile", icon: User },
@@ -24,17 +25,71 @@ function Toggle({ defaultOn = false }: { defaultOn?: boolean }) {
 
 export default function Settings() {
   const [activeTab, setActiveTab] = useState("Profile");
-  const { user } = useAuth();
+  const { user, login } = useAuth();
+  const [saving, setSaving] = useState(false);
 
-  const fullName = user?.name || "John Doe";
-  const nameParts = fullName.split(" ");
-  const firstName = nameParts[0] || "";
-  const lastName = nameParts.length > 1 ? nameParts.slice(1).join(" ") : "";
-  const email = user?.email || "hello@ledgerflow.app";
+  // Form State
+  const [firstName, setFirstName] = useState("");
+  const [lastName, setLastName] = useState("");
+  const [email, setEmail] = useState("");
+  const [jobTitle, setJobTitle] = useState("");
+  const [company, setCompany] = useState("");
+  const [phone, setPhone] = useState("");
+  const [location, setLocation] = useState("");
+  const [bio, setBio] = useState("");
+
+  useEffect(() => {
+    if (user) {
+      const nameParts = (user.name || "John Doe").split(" ");
+      setFirstName(nameParts[0] || "");
+      setLastName(nameParts.length > 1 ? nameParts.slice(1).join(" ") : "");
+      setEmail(user.email || "");
+
+      const sessionUser = user as any;
+      setJobTitle(sessionUser.jobTitle || "Senior Financial Analyst");
+      setCompany(sessionUser.company || "LedgerFlow Inc.");
+      setPhone(sessionUser.phone || "+1 (212) 555-1234");
+      setLocation(sessionUser.location || "New York, USA");
+      setBio(sessionUser.bio || "Passionate about fintech and building scalable financial tools. I love tracking spending habits and uncovering financial insights.");
+    }
+  }, [user]);
+
   const initials = ((firstName[0] || "") + (lastName[0] || "")).toUpperCase() || "JD";
+  const fullName = `${firstName} ${lastName}`.trim() || "John Doe";
 
-  // Safely cast user to any to optionally pull phone if it gets added to the session
-  const phone = (user as any)?.phone || "+1 (212) 555-1234";
+  const handleSaveProfile = async () => {
+    if (!user?.token) return;
+    setSaving(true);
+    try {
+      const res = await fetch("http://localhost:5000/api/auth/profile", {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${user.token}`,
+        },
+        body: JSON.stringify({
+          name: fullName,
+          email,
+          jobTitle,
+          company,
+          phone,
+          location,
+          bio
+        }),
+      });
+      const data = await res.json();
+      if (res.ok) {
+        login(data); // Refresh context user object
+        toast.success("Profile updated successfully!");
+      } else {
+        toast.error(data.message || "Failed to update profile");
+      }
+    } catch (error) {
+      toast.error("An error occurred while saving profile");
+    } finally {
+      setSaving(false);
+    }
+  };
 
   return (
     <motion.div variants={container} initial="hidden" animate="show" className="max-w-7xl mx-auto space-y-6">
@@ -110,23 +165,53 @@ export default function Settings() {
                       Personal Information
                     </h4>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                      {[
-                        { label: "First Name", value: firstName, placeholder: "e.g. Jonas" },
-                        { label: "Last Name", value: lastName, placeholder: "e.g. Davies" },
-                        { label: "Job Title", value: "Senior Financial Analyst", placeholder: "e.g. CEO" },
-                        { label: "Company / Organization", value: "LedgerFlow Inc.", placeholder: "Where do you work?" },
-                      ].map((f) => (
-                        <div key={f.label} className="relative group">
-                          <label className="absolute -top-2 left-4 bg-[#1C1D22] px-1 text-xs text-zinc-500 font-medium z-10 group-focus-within:text-[#14F195] transition-colors">
-                            {f.label}
-                          </label>
-                          <input
-                            className="w-full px-4 py-3.5 rounded-xl border border-[#2A2B32] bg-transparent text-white text-sm outline-none focus:border-[#14F195] transition-colors"
-                            defaultValue={f.value}
-                            placeholder={f.placeholder}
-                          />
-                        </div>
-                      ))}
+                      <div className="relative group">
+                        <label className="absolute -top-2 left-4 bg-[#1C1D22] px-1 text-xs text-zinc-500 font-medium z-10 group-focus-within:text-[#14F195] transition-colors">
+                          First Name
+                        </label>
+                        <input
+                          className="w-full px-4 py-3.5 rounded-xl border border-[#2A2B32] bg-transparent text-white text-sm outline-none focus:border-[#14F195] transition-colors"
+                          value={firstName}
+                          onChange={(e) => setFirstName(e.target.value)}
+                          placeholder="e.g. Jonas"
+                        />
+                      </div>
+
+                      <div className="relative group">
+                        <label className="absolute -top-2 left-4 bg-[#1C1D22] px-1 text-xs text-zinc-500 font-medium z-10 group-focus-within:text-[#14F195] transition-colors">
+                          Last Name
+                        </label>
+                        <input
+                          className="w-full px-4 py-3.5 rounded-xl border border-[#2A2B32] bg-transparent text-white text-sm outline-none focus:border-[#14F195] transition-colors"
+                          value={lastName}
+                          onChange={(e) => setLastName(e.target.value)}
+                          placeholder="e.g. Davies"
+                        />
+                      </div>
+
+                      <div className="relative group">
+                        <label className="absolute -top-2 left-4 bg-[#1C1D22] px-1 text-xs text-zinc-500 font-medium z-10 group-focus-within:text-[#14F195] transition-colors">
+                          Job Title
+                        </label>
+                        <input
+                          className="w-full px-4 py-3.5 rounded-xl border border-[#2A2B32] bg-transparent text-white text-sm outline-none focus:border-[#14F195] transition-colors"
+                          value={jobTitle}
+                          onChange={(e) => setJobTitle(e.target.value)}
+                          placeholder="e.g. CEO"
+                        />
+                      </div>
+
+                      <div className="relative group">
+                        <label className="absolute -top-2 left-4 bg-[#1C1D22] px-1 text-xs text-zinc-500 font-medium z-10 group-focus-within:text-[#14F195] transition-colors">
+                          Company / Organization
+                        </label>
+                        <input
+                          className="w-full px-4 py-3.5 rounded-xl border border-[#2A2B32] bg-transparent text-white text-sm outline-none focus:border-[#14F195] transition-colors"
+                          value={company}
+                          onChange={(e) => setCompany(e.target.value)}
+                          placeholder="Where do you work?"
+                        />
+                      </div>
                     </div>
                   </div>
 
@@ -141,7 +226,8 @@ export default function Settings() {
                         <div className="relative">
                           <input
                             className="w-full px-4 py-3.5 rounded-xl border border-[#2A2B32] bg-transparent text-white text-sm outline-none focus:border-[#14F195] transition-colors pr-24"
-                            defaultValue={email}
+                            value={email}
+                            onChange={(e) => setEmail(e.target.value)}
                             type="email"
                           />
                           <div className="absolute right-3 top-1/2 -translate-y-1/2 flex items-center gap-1.5 bg-[#14F195]/10 px-2 py-1 rounded text-xs font-semibold text-[#14F195]">
@@ -156,7 +242,8 @@ export default function Settings() {
                         </label>
                         <input
                           className="w-full px-4 py-3.5 rounded-xl border border-[#2A2B32] bg-transparent text-white text-sm outline-none focus:border-[#14F195] transition-colors"
-                          defaultValue={phone}
+                          value={phone}
+                          onChange={(e) => setPhone(e.target.value)}
                           type="tel"
                         />
                       </div>
@@ -167,7 +254,8 @@ export default function Settings() {
                         </label>
                         <input
                           className="w-full px-4 py-3.5 rounded-xl border border-[#2A2B32] bg-transparent text-white text-sm outline-none focus:border-[#14F195] transition-colors"
-                          defaultValue="New York, USA"
+                          value={location}
+                          onChange={(e) => setLocation(e.target.value)}
                           placeholder="City, Country"
                         />
                       </div>
@@ -183,7 +271,8 @@ export default function Settings() {
                       </label>
                       <textarea
                         className="w-full px-4 py-3.5 rounded-xl border border-[#2A2B32] bg-transparent text-white text-sm outline-none focus:border-[#14F195] transition-colors min-h-[100px] resize-y"
-                        defaultValue="Passionate about fintech and building scalable financial tools. I love tracking spending habits and uncovering financial insights."
+                        value={bio}
+                        onChange={(e) => setBio(e.target.value)}
                         placeholder="Write a short bio about yourself..."
                       />
                     </div>
@@ -194,8 +283,11 @@ export default function Settings() {
                   <button className="px-6 py-3 rounded-xl bg-transparent text-zinc-400 font-medium text-sm hover:text-white transition-colors">
                     Cancel
                   </button>
-                  <button className="px-6 py-3 rounded-xl bg-[#14F195] text-[#0A0B10] font-bold text-sm hover:bg-[#12D886] hover:scale-[1.02] active:scale-95 transition-all shadow-[0_0_15px_rgba(20,241,149,0.3)]">
-                    Save Changes
+                  <button
+                    onClick={handleSaveProfile}
+                    disabled={saving}
+                    className="px-6 py-3 rounded-xl bg-[#14F195] text-[#0A0B10] font-bold text-sm hover:bg-[#12D886] hover:scale-[1.02] active:scale-95 transition-all shadow-[0_0_15px_rgba(20,241,149,0.3)] disabled:opacity-50 disabled:cursor-not-allowed">
+                    {saving ? "Saving..." : "Save Changes"}
                   </button>
                 </div>
               </div>
